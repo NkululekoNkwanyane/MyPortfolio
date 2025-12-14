@@ -1,62 +1,91 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Update current year in footer
     const currentYear = new Date().getFullYear();
-    const yearElement = document.getElementById('year');
+    const yearElement = document.getElementById('currentYear');
     if (yearElement) {
         yearElement.textContent = currentYear;
     }
+
+    // Mobile Menu Toggle
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mainNav = document.querySelector('.main-nav');
     
-    const navLinks = document.querySelectorAll('.nav a');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            if (this.getAttribute('href').startsWith('#')) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href').substring(1);
-                const targetElement = document.getElementById(targetId);
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
+    if (menuToggle && mainNav) {
+        menuToggle.addEventListener('click', function() {
+            mainNav.classList.toggle('active');
+            // Change icon
+            const icon = this.querySelector('i');
+            if (icon.classList.contains('fa-bars')) {
+                icon.classList.replace('fa-bars', 'fa-times');
+            } else {
+                icon.classList.replace('fa-times', 'fa-bars');
             }
         });
-    });
-    
-    const skillBars = document.querySelectorAll('.skill-level');
-    skillBars.forEach(bar => {
-        const width = bar.style.width;
-        bar.style.width = '0';
-        setTimeout(() => {
-            bar.style.width = width;
-        }, 300);
-    });
-    
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+        
+        // Close menu when clicking a link
+        const navLinks = mainNav.querySelectorAll('a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mainNav.classList.remove('active');
+                menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
+            });
+        });
+    }
+
+    // Animate skill bars when they come into view
+    const animateSkillBars = () => {
+        const skillLevels = document.querySelectorAll('.skill-level');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const level = entry.target.getAttribute('data-level');
+                    entry.target.style.width = `${level}%`;
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        skillLevels.forEach(skill => {
+            skill.style.width = '0%';
+            observer.observe(skill);
+        });
     };
     
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate');
+    // Call after a short delay to ensure DOM is ready
+    setTimeout(animateSkillBars, 500);
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            
+            if (href === '#') return;
+            
+            e.preventDefault();
+            const targetElement = document.querySelector(href);
+            
+            if (targetElement) {
+                const headerHeight = document.querySelector('.site-header').offsetHeight;
+                const targetPosition = targetElement.offsetTop - headerHeight - 20;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
             }
         });
-    }, observerOptions);
-    
-    const projectCards = document.querySelectorAll('.project-card');
-    projectCards.forEach(card => {
-        observer.observe(card);
     });
-    
+
+    // Add scroll effect to header
     window.addEventListener('scroll', function() {
-        const topbar = document.querySelector('.topbar');
+        const header = document.querySelector('.site-header');
         if (window.scrollY > 100) {
-            topbar.style.boxShadow = '0 5px 20px rgba(10, 25, 47, 0.15)';
-            topbar.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+            header.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.1)';
+            header.style.backgroundColor = 'rgba(255, 255, 255, 0.98)';
         } else {
-            topbar.style.boxShadow = '0 2px 10px rgba(10, 25, 47, 0.1)';
-            topbar.style.backgroundColor = 'var(--white)';
+            header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.05)';
+            header.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
         }
     });
 });
