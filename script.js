@@ -1,19 +1,16 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Update current year in footer
     const currentYear = new Date().getFullYear();
     const yearElement = document.getElementById('currentYear');
     if (yearElement) {
         yearElement.textContent = currentYear;
     }
 
-    // Mobile Menu Toggle
     const menuToggle = document.querySelector('.menu-toggle');
     const mainNav = document.querySelector('.main-nav');
     
     if (menuToggle && mainNav) {
         menuToggle.addEventListener('click', function() {
             mainNav.classList.toggle('active');
-            // Change icon
             const icon = this.querySelector('i');
             if (icon.classList.contains('fa-bars')) {
                 icon.classList.replace('fa-bars', 'fa-times');
@@ -22,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Close menu when clicking a link
         const navLinks = mainNav.querySelectorAll('a');
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
@@ -32,7 +28,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Animate skill bars when they come into view
     const animateSkillBars = () => {
         const skillLevels = document.querySelectorAll('.skill-level');
         
@@ -52,10 +47,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
     
-    // Call after a short delay to ensure DOM is ready
     setTimeout(animateSkillBars, 500);
 
-    // Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             const href = this.getAttribute('href');
@@ -77,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Add scroll effect to header
     window.addEventListener('scroll', function() {
         const header = document.querySelector('.site-header');
         if (window.scrollY > 100) {
